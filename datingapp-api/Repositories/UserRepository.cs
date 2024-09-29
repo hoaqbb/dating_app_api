@@ -39,6 +39,12 @@ namespace datingapp_api.Repositories
 
             query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
 
+            query = userParams.OrderBy switch
+            {
+                "createAt" => query.OrderByDescending(u => u.CreateAt),
+                _ => query.OrderByDescending(u => u.LastActive)
+            };
+
             return await PagedList<MemberDto>.CreateAsync(
                 query.ProjectTo<MemberDto>(_mapper.ConfigurationProvider).AsNoTracking(), 
                 userParams.PageNumber, 
@@ -65,8 +71,7 @@ namespace datingapp_api.Repositories
 
         public void Update(User user)
         {
-            //    _context.Users.Update
-            //    _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(user).State = EntityState.Modified;
         }
     }
 }
