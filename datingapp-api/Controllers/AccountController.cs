@@ -32,7 +32,7 @@ namespace datingapp_api.Controllers
 
             var user = _mapper.Map<User>(registerDto);
 
-            user.UserName = registerDto.Username.ToLower();
+            user.Username = registerDto.Username.ToLower();
             user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
             user.PasswordSalt = hmac.Key;
 
@@ -41,19 +41,19 @@ namespace datingapp_api.Controllers
 
             return new UserDto
             {
-                Username = user.UserName,
+                Username = user.Username,
                 Token = _tokenService.CreateToken(user),
                 KnownAs = user.KnownAs,
                 Gender = user.Gender
-            };
+            };  
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> login(LoginDto loginDto)
         {
             var user = await _context.Users
-                .Include(p => p.Photos)
-                .SingleOrDefaultAsync(x => x.UserName == loginDto.Username);
+                .Include(p => p.Photos) 
+                .SingleOrDefaultAsync(x => x.Username == loginDto.Username);
             if (user == null) return Unauthorized("Invalid username");
 
             using var hmac = new HMACSHA512(user.PasswordSalt);
@@ -66,7 +66,7 @@ namespace datingapp_api.Controllers
             }
             return new UserDto
             { 
-                Username = user.UserName,
+                Username = user.Username,
                 Token = _tokenService.CreateToken(user),
                 PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
                 KnownAs = user.KnownAs,
@@ -76,7 +76,7 @@ namespace datingapp_api.Controllers
 
         private async Task<bool> UserExists(string username)
         {
-            return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
+            return await _context.Users.AnyAsync(x => x.Username == username.ToLower());
         }
     }
 }
