@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet.Actions;
 using datingapp_api.Data.Entities;
 using datingapp_api.DTOs;
 using datingapp_api.Extensions;
@@ -32,7 +33,7 @@ namespace datingapp_api.Controllers
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery]UserParams userParams)
         {
             var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
-            userParams.CurrentUsername = user.Username;
+            userParams.CurrentUsername = user.UserName;
 
             if (string.IsNullOrEmpty(userParams.Gender))
                 userParams.Gender = user.Gender == "male" ? "female" : "male";
@@ -92,7 +93,7 @@ namespace datingapp_api.Controllers
 
             if(await _userRepository.SaveAllAsync())
             {
-                return CreatedAtRoute("GetUser", new {username = user.Username}, _mapper.Map<PhotoDto>(photo));
+                return CreatedAtRoute("GetUser", new {username = user.UserName}, _mapper.Map<PhotoDto>(photo));
             }
                 
 

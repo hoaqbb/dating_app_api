@@ -1,16 +1,9 @@
-﻿using datingapp_api.Extensions;
-using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace datingapp_api.Data.Entities
 {
-    public class User
+    public class User : IdentityUser<int>
     {
-        [Key]
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
-
         public DateTime DateOfBirth { get; set; }
         public string KnownAs { get; set; }
         public DateTime CreateAt { get; set; } = DateTime.Now;
@@ -26,5 +19,6 @@ namespace datingapp_api.Data.Entities
         public ICollection<UserLike> LikedUsers { get; set; }
         public ICollection<Message> MessagesSent { get; set; }
         public ICollection<Message> MessagesReceived { get; set; }
+        public ICollection<UserRole> UserRoles { get; set; }
     }
 }

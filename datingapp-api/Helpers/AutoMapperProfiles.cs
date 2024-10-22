@@ -10,6 +10,8 @@ namespace datingapp_api.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<User, MemberDto>()
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => 
+                    src.UserName))
                 .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => 
                     src.Photos.FirstOrDefault(x => x.IsMain).Url))
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
