@@ -3,11 +3,12 @@ using datingapp_api.Helpers;
 using datingapp_api.Interfaces;
 using datingapp_api.Repositories;
 using datingapp_api.Services;
+using datingapp_api.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace datingapp_api.Extensions
 {
-    public static class AplicationServiceExtensions
+    public static class ApplicationServiceExtensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
@@ -16,6 +17,7 @@ namespace datingapp_api.Extensions
                 option.UseSqlServer(config.GetConnectionString("SqlServerConnection"));
             });
             //add DI
+            services.AddSingleton<PresenceTracker>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IUserRepository, UserRepository>();

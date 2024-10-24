@@ -3,6 +3,7 @@ using datingapp_api.Extensions;
 using datingapp_api.Interfaces;
 using datingapp_api.Middlewares;
 using datingapp_api.Services;
+using datingapp_api.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -55,11 +56,15 @@ namespace datingapp_api
 
             builder.Services.AddCors(opt =>
             {
-                opt.AddDefaultPolicy(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+                opt.AddPolicy("MyCor", policy => policy.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+                    .WithOrigins("http://localhost:4200"));
             });
 
             builder.Services.AddApplicationServices(builder.Configuration);
             builder.Services.AddIdentityServices(builder.Configuration);
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
 
@@ -74,13 +79,14 @@ namespace datingapp_api
 
             app.UseHttpsRedirection();
 
-            app.UseCors();
+            app.UseCors("MyCor");
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-
+            
             app.MapControllers();
+            app.MapHub<PresenceHub>("hubs/presence");
+            app.MapHub<MessageHub>("hubs/message");
 
             //using var scope = app.Services.CreateScope();
             //var services = scope.ServiceProvider;
