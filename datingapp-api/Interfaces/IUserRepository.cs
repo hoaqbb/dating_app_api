@@ -7,10 +7,10 @@ namespace datingapp_api.Interfaces
     public interface IUserRepository
     {
         void Update(User user);
-        Task<bool> SaveAllAsync();
         Task<User> GetUserByIdAsync(int id);
         Task<User> GetUserByUsernameAsync(string username);
         Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams);
         Task<MemberDto> GetMemberByUsernameAsync(string username);
+        Task<string> GetUserGender(string username);
     }
 }

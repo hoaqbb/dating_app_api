@@ -64,9 +64,12 @@ namespace datingapp_api.Repositories
                 .SingleOrDefaultAsync(x => x.UserName == username);
         }
 
-        public async Task<bool> SaveAllAsync()
+        public async Task<string> GetUserGender(string username)
         {
-            return await _context.SaveChangesAsync() > 0;
+            return await _context.Users
+                .Where(x => x.UserName == username)
+                .Select(x => x.Gender)
+                .FirstOrDefaultAsync();
         }
 
         public void Update(User user)

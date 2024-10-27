@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace datingapp_api.Data.Entities
 {
@@ -60,5 +61,20 @@ namespace datingapp_api.Data.Entities
                 .WithMany(m => m.MessagesSent)
                 .OnDelete(DeleteBehavior.Restrict);
         }
+        //convert all datetime type to kind utc with convention
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            configurationBuilder
+                .Properties<DateTime>()
+                .HaveConversion(typeof(UtcValueConverter));
+        }
+        class UtcValueConverter : ValueConverter<DateTime, DateTime>
+        {
+            public UtcValueConverter()
+                : base(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc))
+            {
+            }
+        }
     }
+    
 }
