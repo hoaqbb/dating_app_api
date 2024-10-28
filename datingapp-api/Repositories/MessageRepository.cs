@@ -73,7 +73,7 @@ namespace datingapp_api.Repositories
             {
                 "Inbox" => query.Where(u => u.RecipientUsername == messageParams.Username 
                     && u.RecipientDeleted == false),
-                "Outbox" => query.Where(u => u.RecipientUsername == messageParams.Username
+                "Outbox" => query.Where(u => u.SenderUsername == messageParams.Username
                     && u.SenderDeleted == false),
                 _ => query.Where(u => u.RecipientUsername == messageParams.Username 
                     && u.RecipientDeleted == false 
@@ -86,10 +86,10 @@ namespace datingapp_api.Repositories
         public async Task<IEnumerable<MessageDto>> GetMessageThread(string currentUsername, string recipientUsername)
         {
             var messages = await _context.Messages
-                .Where(m => m.Recipient.UserName == currentUsername && m.RecipientDeleted == false
-                    && m.Sender.UserName == recipientUsername
-                    || m.Recipient.UserName == recipientUsername
-                    && m.Sender.UserName == currentUsername && m.SenderDeleted == false)
+                .Where(m => m.RecipientUsername == currentUsername && m.RecipientDeleted == false
+                    && m.SenderUsername == recipientUsername
+                    || m.RecipientUsername == recipientUsername
+                    && m.SenderUsername == currentUsername && m.SenderDeleted == false)
                 .OrderBy(m => m.MessageSent)
                 .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
